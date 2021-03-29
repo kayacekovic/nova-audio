@@ -10,7 +10,7 @@ Under the hood it uses thabsic HTML5 Audio tag. So MP3, WAV and OGG are supporte
 
 ## Installation
 ```
-composer require davidpiesse/nova-audio
+composer require kayacekovic/nova-audio
 ```
 
 To use the field add it to your Nova Resources file (such as User.php)
@@ -26,6 +26,7 @@ public function fields(Request $request)
         Audio::make('Audio', function() {
             return 'path-to-your-folder-on-s3'.$this->audio_file_name_from_model;
         })->disk('s3')
+        ->playOnForms() // can you show audio field on update or create form
         ->expires(5),
         ...
     ];

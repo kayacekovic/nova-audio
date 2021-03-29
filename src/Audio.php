@@ -37,4 +37,9 @@ class Audio extends File
         
         return $this;
     }
+
+    public function playOnForms($playOnForms = true)
+    {
+        return $this->withMeta(['playOnForms' => $playOnForms]);
+    }
 }

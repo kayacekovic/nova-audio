@@ -1,72 +1,82 @@
 <template>
     <default-field :field="field">
         <template slot="field">
-            <div v-if="hasValue" class="mb-6">
-                <template v-if="shouldShowLoader">
+            <audio
+                v-if="field.playOnForms"
+                controls
+                controlslist="nodownload"
+                :src="src"
+                :autoplay="autoplay"
+                :preload="preload"
+            />
+            <div v-else>
+                <div v-if="hasValue" class="mb-6">
+                  <template v-if="shouldShowLoader">
                     <ImageLoader :src="field.thumbnailUrl" class="max-w-xs" @missing="(value) => missing = value" />
-                </template>
+                  </template>
 
-                <template v-if="field.value && !field.thumbnailUrl">
+                  <template v-if="field.value && !field.thumbnailUrl">
                     <card class="flex item-center relative border border-lg border-50 overflow-hidden p-4">
-                        {{ field.value }}
+                      {{ field.value }}
 
-                        <DeleteButton
-                            :dusk="field.attribute + '-internal-delete-link'"
-                            class="ml-auto"
-                            v-if="shouldShowRemoveButton"
-                            @click="confirmRemoval"
-                        />
+                      <DeleteButton
+                          :dusk="field.attribute + '-internal-delete-link'"
+                          class="ml-auto"
+                          v-if="shouldShowRemoveButton"
+                          @click="confirmRemoval"
+                      />
                     </card>
-                </template>
+                  </template>
 
-                <p
-                    v-if="field.thumbnailUrl"
-                    class="mt-3 flex items-center text-sm"
-                >
+                  <p
+                      v-if="field.thumbnailUrl"
+                      class="mt-3 flex items-center text-sm"
+                  >
                     <DeleteButton
                         :dusk="field.attribute + '-delete-link'"
                         v-if="shouldShowRemoveButton"
                         @click="confirmRemoval"
                     >
-                        <span class="class ml-2 mt-1">
-                            {{__('Delete')}}
-                        </span>
+                            <span class="class ml-2 mt-1">
+                                {{__('Delete')}}
+                            </span>
                     </DeleteButton>
-                </p>
+                  </p>
 
-                <portal to="modals">
+                  <portal to="modals">
                     <transition name="fade">
-                        <confirm-upload-removal-modal
-                            v-if="removeModalOpen"
-                            @confirm="removeFile"
-                            @close="closeRemoveModal"
-                        />
+                      <confirm-upload-removal-modal
+                          v-if="removeModalOpen"
+                          @confirm="removeFile"
+                          @close="closeRemoveModal"
+                      />
                     </transition>
-                </portal>
+                  </portal>
+                </div>
+
+                <span class="form-file mr-4">
+                    <input
+                        ref="fileField"
+                        :dusk="field.attribute"
+                        class="form-file-input"
+                        type="file"
+                        :id="idAttr"
+                        name="name"
+                        @change="fileChange"
+                    />
+                    <label :for="labelFor" class="form-file-btn btn btn-default btn-primary">
+                        {{__('Choose File')}}
+                    </label>
+                </span>
+
+                <span class="text-gray-50">
+                    {{ currentLabel }}
+                </span>
+
+                <p v-if="hasError" class="mt-4 text-danger">
+                    {{ firstError }}
+                </p>
             </div>
-
-            <span class="form-file mr-4">
-                <input
-                    ref="fileField"
-                    :dusk="field.attribute"
-                    class="form-file-input"
-                    type="file"
-                    :id="idAttr"
-                    name="name"
-                    @change="fileChange"
-                />
-                <label :for="labelFor" class="form-file-btn btn btn-default btn-primary">
-                    {{__('Choose File')}}
-                </label>
-            </span>
-
-            <span class="text-gray-50">
-                {{ currentLabel }}
-            </span>
-
-            <p v-if="hasError" class="mt-4 text-danger">
-                {{ firstError }}
-            </p>
         </template>
     </default-field>
 </template>
@@ -89,6 +99,9 @@ export default {
         missing: false,
         deleted: false,
         uploadErrors: new Errors(),
+        src: this.field.previewUrl,
+        autoplay: false,
+        preload: 'none'
     }),
 
     mounted() {

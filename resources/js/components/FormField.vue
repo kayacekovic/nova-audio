@@ -5,7 +5,7 @@
                 v-if="field.playOnForms"
                 controls
                 controlslist="nodownload"
-                :src="src"
+                :src="field.previewUrl"
                 :autoplay="autoplay"
                 :preload="preload"
             />
@@ -99,7 +99,6 @@ export default {
         missing: false,
         deleted: false,
         uploadErrors: new Errors(),
-        src: this.field.previewUrl,
         autoplay: false,
         preload: 'none'
     }),

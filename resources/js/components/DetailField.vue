@@ -36,6 +36,7 @@
                     <span class="class mt-1">{{ __('Download') }}</span>
                 </a>
             </p>
+          <div v-if="showHelpText" class="help-text help-text mt-2">{{ field.helpText }}</div>
         </div>
     </panel-item>
 </template>

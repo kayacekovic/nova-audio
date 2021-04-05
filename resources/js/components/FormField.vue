@@ -77,6 +77,7 @@
                     {{ firstError }}
                 </p>
             </div>
+            <div v-if="showHelpText" class="help-text help-text mt-2">{{ field.helpText }}</div>
         </template>
     </default-field>
 </template>
